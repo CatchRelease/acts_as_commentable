@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    acts_as_commentable (4.0.2)
+    acts_as_commentable (6.0)
 
 GEM
   remote: http://rubygems.org/

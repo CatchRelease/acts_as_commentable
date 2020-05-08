@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ActsAsCommentable
   # including this module into your Comment model will give you finders and named scopes
   # useful for working with Comments.
@@ -6,7 +8,6 @@ module ActsAsCommentable
   #   recent: Returns comments by how recently they were created (created_at DESC).
   #   limit(N): Return no more than N comments.
   module Comment
-
     def self.included(comment_model)
       comment_model.instance_eval do
         extend Finders
@@ -22,14 +23,14 @@ module ActsAsCommentable
     module Finders
       # Helper class method to lookup all comments assigned
       # to all commentable types for a given user.
-      def find_comments_by_user(user, role = "comments")
-        where(["user_id = ? and role = ?", user.id, role]).order("created_at DESC")
+      def find_comments_by_user(user, role = 'comments')
+        where(['user_id = ? and role = ?', user.id, role]).order('created_at DESC')
       end
 
       # Helper class method to look up all comments for
       # commentable class name and commentable id.
-      def find_comments_for_commentable(commentable_str, commentable_id, role = "comments")
-        where(["commentable_type = ? and commentable_id = ? and role = ?", commentable_str, commentable_id, role]).order("created_at DESC")
+      def find_comments_for_commentable(commentable_str, commentable_id, role = 'comments')
+        where(['commentable_type = ? and commentable_id = ? and role = ?', commentable_str, commentable_id, role]).order('created_at DESC')
       end
 
       # Helper class method to look up a commentable object
