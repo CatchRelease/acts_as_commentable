@@ -1,7 +1,7 @@
 ActiveRecord::Schema.define(:version => 0) do
   create_table :posts do |t|
     t.text :text
-    t.datetime
+    t.timestamps
   end
 
   create_table :users do |u|

@@ -12,18 +12,18 @@ module Juixe
       module HelperMethods
         private
         def define_role_based_inflection(role)
-          send("define_role_based_inflection_#{Rails.version.first}", role)
+          send("define_role_based_inflection_#{::Rails.version.first}", role)
         end
 
         def define_role_based_inflection_3(role)
           has_many "#{role.to_s}_comments".to_sym,
-                   has_many_options(role).merge(:conditions => { role: role.to_s })
+                   **has_many_options(role).merge(:conditions => { role: role.to_s })
         end
 
         def define_role_based_inflection_4(role)
           has_many "#{role.to_s}_comments".to_sym,
                    -> { where(role: role.to_s) },
-                   has_many_options(role)
+                   **has_many_options(role)
         end
 
         def define_role_based_inflection_5(role)
@@ -61,9 +61,9 @@ module Juixe
             comment_roles.each do |role|
               define_role_based_inflection(role)
             end
-            has_many :all_comments, { :as => :commentable, :dependent => :destroy, class_name: 'Comment' }.merge(join_options)
+            has_many :all_comments, **{ :as => :commentable, :dependent => :destroy, class_name: 'Comment' }.merge(join_options)
           else
-            has_many :comments, {:as => :commentable, :dependent => :destroy}.merge(join_options)
+            has_many :comments, **{:as => :commentable, :dependent => :destroy}.merge(join_options)
           end
 
           comment_types.each do |role|

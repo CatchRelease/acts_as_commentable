@@ -1,6 +1,7 @@
 require 'test/unit'
 require 'logger'
 require 'pry'
+require 'rails'
 require File.expand_path(File.dirname(__FILE__) + '/../rails/init')
 
 ActiveRecord::Migration.verbose = false
@@ -9,7 +10,7 @@ ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":me
 class ActsAsCommentableTest < Test::Unit::TestCase
 
   def setup_comments
-    require File.expand_path(File.dirname(__FILE__) + '/../lib/generators/comment/templates/create_comments') 
+    require File.expand_path(File.dirname(__FILE__) + '/../lib/generators/comment/templates/create_comments')
     CreateComments.up
     load(File.expand_path(File.dirname(__FILE__) + '/../lib/generators/comment/templates/comment.rb'))
   end
@@ -38,7 +39,7 @@ class ActsAsCommentableTest < Test::Unit::TestCase
     assert_not_nil wall.public_comments.create(:title => "comment.", :comment => "This is the a comment.").id
     assert_not_nil wall.private_comments.create(:title => "comment.", :comment => "This is the a comment.").id
     assert_raise NoMethodError do
-      wall.comments.create(:title => "Comment", :title => "Title")
+      wall.comments.create(:comment => "Comment", :title => "Title")
     end
   end
 
@@ -59,11 +60,11 @@ class ActsAsCommentableTest < Test::Unit::TestCase
 
   def test_find_comments_by_user
     user = User.create(:name => "Mike")
-    user2 = User.create(:name => "Fake") 
+    user2 = User.create(:name => "Fake")
     post = Post.create(:text => "Awesome post !")
     comment = post.comments.create(:title => "First comment.", :comment => "This is the first comment.", :user => user)
     assert_equal true, Post.find_comments_by_user(user).include?(comment)
-    assert_equal false, Post.find_comments_by_user(user2).include?(comment) 
+    assert_equal false, Post.find_comments_by_user(user2).include?(comment)
   end
 
   def test_find_comments_for_commentable
@@ -75,7 +76,7 @@ class ActsAsCommentableTest < Test::Unit::TestCase
   def test_find_commentable
     post = Post.create(:text => "Awesome post !")
     comment = post.comments.create(:title => "First comment.", :comment => "This is the first comment.")
-    assert_equal post, Comment.find_commentable(post.class.name, post.id) 
+    assert_equal post, Comment.find_commentable(post.class.name, post.id)
   end
 
   def test_find_comments_for
@@ -126,15 +127,18 @@ class ActsAsCommentableTest < Test::Unit::TestCase
     comment = post.comments.create(:title => "First comment.", :comment => "This is the first comment.")
     comment2 = post.comments.create(:title => "Second comment.", :comment => "This is the second comment.")
     assert_equal [comment2, comment], post.comments.recent
+    assert_equal [comment, comment2], post.comments.in_order
 
     wall = Wall.create(:name => "wall")
     private_comment = wall.private_comments.create(:title => "wall private comment", :comment => "Yipiyayeah !")
     private_comment2 = wall.private_comments.create(:title => "wall private comment", :comment => "Yipiyayeah !")
     assert_equal [private_comment2, private_comment], wall.private_comments.recent
+    assert_equal [private_comment, private_comment2], wall.private_comments.in_order
 
     public_comment = wall.public_comments.create(:title => "wall public comment", :comment => "Yipiyayeah !")
     public_comment2 = wall.public_comments.create(:title => "wall public comment", :comment => "Yipiyayeah !")
     assert_equal [public_comment2, public_comment], wall.public_comments.recent
+    assert_equal [public_comment, public_comment2], wall.public_comments.in_order
   end
 
   def test_add_comment

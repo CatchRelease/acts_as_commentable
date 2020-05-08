@@ -16,14 +16,4 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.6}
   s.summary = %q{Plugin/gem that provides comment functionality}
   s.license = 'MIT'
-
-  if s.respond_to? :specification_version then
-    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
-    s.specification_version = 3
-
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-    else
-    end
-  else
-  end
 end
